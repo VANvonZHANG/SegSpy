@@ -1,8 +1,9 @@
 """Tests for SegSpy.io helpers."""
 import numpy as np
+import pytest
 import hyperspy.api as hs
 
-from SegSpy.io import to_uint8
+from SegSpy.io import get_scale_nm, to_uint8
 
 
 class TestToUint8:
@@ -33,3 +34,27 @@ class TestToUint8:
         original = s.data.copy()
         to_uint8(s)
         np.testing.assert_array_equal(s.data, original)
+
+
+class TestGetScaleNm:
+    def _sig(self, scale, units):
+        s = hs.signals.Signal2D(np.zeros((10, 10)))
+        s.axes_manager[0].scale = scale
+        s.axes_manager[0].units = units
+        return s
+
+    def test_um_times_1000(self):
+        assert get_scale_nm(self._sig(0.5, "um")) == 500.0
+
+    def test_nm_times_1(self):
+        assert get_scale_nm(self._sig(2.5, "nm")) == 2.5
+
+    def test_mm_times_1e6(self):
+        assert get_scale_nm(self._sig(1.0, "mm")) == 1e6
+
+    def test_pm_times_1e_minus_3(self):
+        assert get_scale_nm(self._sig(2.0, "pm")) == 2.0e-3
+
+    def test_unknown_units_raises(self):
+        with pytest.raises(ValueError, match="Unknown units"):
+            get_scale_nm(self._sig(1.0, "furlongs"))

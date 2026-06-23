@@ -1,7 +1,7 @@
 """HyperSpy-native I/O helpers.
 
 SegSpy consumes :class:`hyperspy.signals.Signal2D` objects; loading EM files is
-the caller's job (use ``hyperspy.api.load``). The helpers here are
+the caller's job (use ``hyperspy.api.load``). The two helpers here are
 dependency-light utilities shared across backends and the CLI.
 """
 import numpy as np
@@ -27,3 +27,25 @@ def to_uint8(signal):
     result = signal.deepcopy()
     result.data = normalized
     return result
+
+
+def get_scale_nm(signal) -> float:
+    """Return the nm/pixel scale from a signal's axis calibration.
+
+    Converts the axis-0 ``scale`` × ``units`` into nanometers:
+    ``um``→×1000, ``nm``→×1, ``mm``→×1e6, ``pm``→×1e-3.
+
+    Raises:
+        ValueError: if the units string is not a recognised length unit.
+    """
+    scale = signal.axes_manager[0].scale
+    units = signal.axes_manager[0].units
+    if units in ("um", "µm", "micrometer"):
+        return scale * 1000.0
+    if units in ("nm", "nanometer"):
+        return scale
+    if units in ("mm",):
+        return scale * 1e6
+    if units in ("pm", "picometer"):
+        return scale * 1e-3
+    raise ValueError(f"Unknown units for scale conversion: '{units}'")
