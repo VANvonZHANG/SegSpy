@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SegSpy"
+version = "0.1.0"
+description = "Headless, backend-pluggable EM image segmentation library for HyperSpy"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = ["microscopy", "segmentation", "hyperspy", "tem", "sem", "image-analysis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+dependencies = [
+    "numpy",
+    "opencv-python",
+    "scipy",
+    "hyperspy>=2.0",
+]
+
+[project.optional-dependencies]
+sam = ["segment-anything", "torch"]
+dev = ["pytest", "ruff", "mypy"]
+
+[project.scripts]
+SegSpy = "SegSpy.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["SegSpy*"]
+
+[tool.setuptools.package-data]
+SegSpy = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v"
