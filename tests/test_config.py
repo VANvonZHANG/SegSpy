@@ -1,4 +1,7 @@
 """Tests for SegSpy.config.SegConfig."""
+import hyperspy.api as hs
+import numpy as np
+
 from SegSpy.config import SegConfig
 
 
@@ -29,3 +32,31 @@ def test_field_overrides():
     assert c.min_area == 500
     assert c.backend == "sam"
     assert c.threshold_method == "otsu"
+
+
+def test_from_signal_detects_tem_by_default():
+    s = hs.signals.Signal2D(np.zeros((10, 10)))
+    c = SegConfig.from_signal(s)
+    assert c.microscope_type == "TEM"
+
+
+def test_from_signal_detects_sem_from_metadata():
+    s = hs.signals.Signal2D(np.zeros((10, 10)))
+    s.metadata.set_item("Acquisition_instrument.SEM.beam_energy", 5.0)
+    c = SegConfig.from_signal(s)
+    assert c.microscope_type == "SEM"
+
+
+def test_from_signal_detects_tem_from_metadata():
+    s = hs.signals.Signal2D(np.zeros((10, 10)))
+    s.metadata.set_item("Acquisition_instrument.TEM.beam_energy", 200.0)
+    c = SegConfig.from_signal(s)
+    assert c.microscope_type == "TEM"
+
+
+def test_from_signal_applies_overrides():
+    s = hs.signals.Signal2D(np.zeros((10, 10)))
+    c = SegConfig.from_signal(s, min_area=777, backend="sam")
+    assert c.microscope_type == "TEM"
+    assert c.min_area == 777
+    assert c.backend == "sam"

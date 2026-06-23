@@ -11,7 +11,8 @@ from dataclasses import dataclass
 class SegConfig:
     """Segmentation + morphology configuration.
 
-    All values default to sensible EM-image defaults; override via the constructor.
+    All values default to sensible EM-image defaults; override via the
+    constructor or :meth:`from_signal`.
     """
 
     microscope_type: str = "TEM"
@@ -45,3 +46,21 @@ class SegConfig:
 
     # --- Output ---
     output_dir: str = "output"
+
+    @classmethod
+    def from_signal(cls, signal, **overrides):
+        """Build a config, auto-detecting TEM/SEM from HyperSpy metadata.
+
+        Detection mirrors the EM community convention: a ``SEM`` block in
+        ``Acquisition_instrument`` wins; otherwise TEM (the default). Any
+        keyword overrides are applied on top of the defaults.
+        """
+        mtype = "TEM"
+        md = signal.metadata
+        if "Acquisition_instrument" in md:
+            inst = md.Acquisition_instrument
+            if "SEM" in inst:
+                mtype = "SEM"
+            elif "TEM" in inst:
+                mtype = "TEM"
+        return cls(microscope_type=mtype, **overrides)
