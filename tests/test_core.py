@@ -32,3 +32,19 @@ def test_metrics_defaults_to_empty_dict_and_is_per_instance():
     assert obj_a.metrics == {"area": 1.0}
     # Default must be per-instance, not a shared mutable.
     assert obj_b.metrics == {}
+
+
+def test_get_physical_scale_nm_returns_one_for_plain_ndarray():
+    obj = ParticleObject(1, np.zeros((10, 10)), np.zeros((10, 10)))
+    assert obj.get_physical_scale_nm() == 1.0
+
+
+def test_get_physical_scale_nm_reads_hyperspy_calibration():
+    import hyperspy.api as hs
+
+    sig = hs.signals.Signal2D(np.zeros((10, 10)))
+    sig.axes_manager[0].scale = 0.5
+    sig.axes_manager[0].units = "um"
+    obj = ParticleObject(1, sig, np.zeros((10, 10), dtype=np.uint8))
+    # 0.5 um/pixel -> 500 nm/pixel
+    assert obj.get_physical_scale_nm() == 500.0
