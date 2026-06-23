@@ -1,10 +1,36 @@
 """SegSpy — headless, backend-pluggable EM image segmentation library for HyperSpy.
 
-Public API symbols are re-exported here as modules are implemented
-(see :mod:`SegSpy.core`, :mod:`SegSpy.io`, ...). During incremental
-construction this module only exposes ``__version__``; downstream imports
-should target the submodules directly or import from the top level once the
-full API is in place.
+Public API:
+
+    from SegSpy import SegConfig, SegmentationRegistry, measure_morphology
+
+    backend = SegmentationRegistry.get("traditional_cv")
+    mask = backend.segment(signal, SegConfig())
+    objects = backend.extract_objects(signal, mask, SegConfig())
+    for obj in objects:
+        measure_morphology(obj, scale_nm=1.0)
 """
+from SegSpy.config import SegConfig
+from SegSpy.core import ParticleObject
+from SegSpy.io import get_scale_nm, to_uint8
+from SegSpy.morphology import measure_morphology
+from SegSpy.backends import (
+    SAMSegmenter,
+    SegmentationBackend,
+    SegmentationRegistry,
+    TraditionalCVSegmenter,
+)
 
 __version__ = "0.1.0"
+
+__all__ = [
+    "SegConfig",
+    "ParticleObject",
+    "to_uint8",
+    "get_scale_nm",
+    "measure_morphology",
+    "SegmentationBackend",
+    "SegmentationRegistry",
+    "TraditionalCVSegmenter",
+    "SAMSegmenter",
+]
