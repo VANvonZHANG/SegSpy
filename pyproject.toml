@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=64", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,11 +8,24 @@ version = "0.1.0"
 description = "Headless, backend-pluggable EM image segmentation library for HyperSpy"
 readme = "README.md"
 requires-python = ">=3.10"
-license = "MIT"
-keywords = ["microscopy", "segmentation", "hyperspy", "tem", "sem", "image-analysis"]
+license = {text = "MIT"}
+authors = [
+    {name = "Fan Zhang", email = "vanvonzhang@gmail.com"},
+]
+keywords = [
+    "microscopy",
+    "hyperspy",
+    "segmentation",
+    "tem",
+    "sem",
+    "image-analysis",
+    "particle",
+    "electron-microscopy",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -29,31 +42,50 @@ dependencies = [
 
 [project.optional-dependencies]
 sam = ["segment-anything", "torch"]
-dev = ["pytest", "ruff", "mypy"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.6.0",
+    "pre-commit>=3.0",
+]
 
 [project.scripts]
 SegSpy = "SegSpy.cli:main"
 
+[project.urls]
+Homepage = "https://github.com/VANvonZHANG/SegSpy"
+Repository = "https://github.com/VANvonZHANG/SegSpy"
+"Bug Tracker" = "https://github.com/VANvonZHANG/SegSpy/issues"
+Changelog = "https://github.com/VANvonZHANG/SegSpy/blob/main/CHANGELOG.md"
+
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["SegSpy*"]
+where = ["src"]
 
 [tool.setuptools.package-data]
 SegSpy = ["py.typed"]
 
 [tool.ruff]
-line-length = 100
 target-version = "py310"
+line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP"]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # Pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "W",   # pycodestyle warnings
+    "UP",  # pyupgrade
+]
+ignore = ["E501", "E741", "N806", "N817", "N999"]
 
-[tool.mypy]
-python_version = "3.10"
-ignore_missing_imports = true
-disallow_untyped_defs = false
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v"
+addopts = "-v --cov=SegSpy --cov-report=term-missing"
