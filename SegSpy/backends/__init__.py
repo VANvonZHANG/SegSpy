@@ -1,6 +1,21 @@
 """Segmentation backends and the central registry.
 
-Built-in backends (:class:`~SegSpy.backends.traditional.TraditionalCVSegmenter`
-and :class:`~SegSpy.backends.sam.SAMSegmenter`) are registered here at import
-time once their modules are in place (see Task 8).
+Built-in backends are registered here at import time:
+
+- :class:`~SegSpy.backends.traditional.TraditionalCVSegmenter` → ``traditional_cv``
+- :class:`~SegSpy.backends.sam.SAMSegmenter` → ``sam``
 """
+from SegSpy.backends.base import SegmentationBackend
+from SegSpy.backends.registry import SegmentationRegistry
+from SegSpy.backends.sam import SAMSegmenter
+from SegSpy.backends.traditional import TraditionalCVSegmenter
+
+SegmentationRegistry.register(TraditionalCVSegmenter)
+SegmentationRegistry.register(SAMSegmenter)
+
+__all__ = [
+    "SegmentationBackend",
+    "SegmentationRegistry",
+    "TraditionalCVSegmenter",
+    "SAMSegmenter",
+]
