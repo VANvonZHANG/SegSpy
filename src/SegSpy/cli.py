@@ -6,11 +6,12 @@ a labelled-mask PNG. The core logic is split into :func:`run_segmentation`
 (signal in, objects out) and :func:`write_results` so both are reusable and
 unit-testable without going through ``argparse``/file I/O.
 """
+
 import argparse
 import csv
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 import cv2
 import hyperspy.api as hs
@@ -22,8 +23,14 @@ from SegSpy.morphology import measure_morphology
 
 # Distinct BGR colours for labelling successive particles on the PNG.
 _LABEL_COLORS = [
-    (0, 0, 255), (0, 255, 0), (255, 0, 0), (0, 255, 255),
-    (255, 0, 255), (255, 255, 0), (128, 0, 255), (0, 128, 255),
+    (0, 0, 255),
+    (0, 255, 0),
+    (255, 0, 0),
+    (0, 255, 255),
+    (255, 0, 255),
+    (255, 255, 0),
+    (128, 0, 255),
+    (0, 128, 255),
 ]
 
 
@@ -72,7 +79,7 @@ def _flatten_metrics(obj):
     """Flatten a ParticleObject into a CSV row (id + scalar metrics)."""
     row = {"particle_id": obj.particle_id, "area_px": obj.area_px}
     for key, value in obj.metrics.items():
-        if isinstance(value, (tuple, list, np.ndarray)):
+        if isinstance(value, tuple | list | np.ndarray):
             value = ";".join(f"{float(v):.4f}" for v in np.asarray(value).ravel())
         row[key] = value
     return row
@@ -114,8 +121,7 @@ def _cmd_run(args) -> int:
     stem = Path(args.file).stem
     write_results(objects, args.output, stem, signal.data.shape[:2])
     print(
-        f"Segmented {len(objects)} particle(s) -> "
-        f"{Path(args.output) / (stem + '_particles.csv')}"
+        f"Segmented {len(objects)} particle(s) -> {Path(args.output) / (stem + '_particles.csv')}"
     )
     return 0
 
@@ -130,18 +136,20 @@ def _build_parser() -> argparse.ArgumentParser:
     run_p = sub.add_parser("run", help="Segment an image file and export results.")
     run_p.add_argument("file", help="Path to an EM image readable by HyperSpy.")
     run_p.add_argument(
-        "--backend", default="traditional_cv",
+        "--backend",
+        default="traditional_cv",
         help="Segmentation backend name (default: traditional_cv).",
     )
+    run_p.add_argument("--output", default="output", help="Output directory (default: output).")
     run_p.add_argument(
-        "--output", default="output", help="Output directory (default: output)."
-    )
-    run_p.add_argument(
-        "--min-area", type=int, default=100,
+        "--min-area",
+        type=int,
+        default=100,
         help="Minimum particle contour area in pixels (default: 100).",
     )
     run_p.add_argument(
-        "--no-grabcut", action="store_true",
+        "--no-grabcut",
+        action="store_true",
         help="Disable GrabCut refinement (traditional backend).",
     )
     return parser

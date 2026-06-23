@@ -1,11 +1,11 @@
 """Tests for SegSpy.morphology.measure_morphology."""
-import pytest
+
 import cv2
 import numpy as np
+import pytest
 
 from SegSpy.core import ParticleObject
 from SegSpy.morphology import measure_morphology
-
 
 REQUIRED_KEYS = {
     "area_px",
@@ -59,7 +59,7 @@ def test_circle_area_matches_pi_r_squared():
     obj = _obj_from_mask(mask)
     metrics = measure_morphology(obj)
     # Discrete circle is slightly smaller than the ideal; allow ~5% slack.
-    assert metrics["area_px"] == pytest.approx(np.pi * radius ** 2, rel=0.05)
+    assert metrics["area_px"] == pytest.approx(np.pi * radius**2, rel=0.05)
 
 
 def test_circle_equivalent_diameter_matches_2r():
@@ -114,18 +114,14 @@ def test_nm_variants_equal_px_times_scale():
     assert metrics["equivalent_diameter_nm"] == pytest.approx(
         metrics["equivalent_diameter_px"] * 2.5
     )
-    assert metrics["feret_max_nm"] == pytest.approx(
-        metrics["feret_max_px"] * 2.5
-    )
+    assert metrics["feret_max_nm"] == pytest.approx(metrics["feret_max_px"] * 2.5)
 
 
 def test_default_scale_nm_one_means_nm_equals_px():
     mask = _circle_mask(100, (50, 50), 20)
     obj = _obj_from_mask(mask)
     metrics = measure_morphology(obj)  # scale_nm defaults to 1.0
-    assert metrics["equivalent_diameter_nm"] == pytest.approx(
-        metrics["equivalent_diameter_px"]
-    )
+    assert metrics["equivalent_diameter_nm"] == pytest.approx(metrics["equivalent_diameter_px"])
 
 
 def test_centroid_within_mask_bounds():

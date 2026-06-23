@@ -1,4 +1,5 @@
 """Tests for SegSpy.config.SegConfig."""
+
 import hyperspy.api as hs
 import numpy as np
 

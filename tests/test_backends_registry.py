@@ -1,4 +1,5 @@
 """Tests for SegSpy.backends.registry.SegmentationRegistry."""
+
 import numpy as np
 import pytest
 

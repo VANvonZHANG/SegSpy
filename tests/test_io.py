@@ -1,16 +1,15 @@
 """Tests for SegSpy.io helpers."""
+
+import hyperspy.api as hs
 import numpy as np
 import pytest
-import hyperspy.api as hs
 
 from SegSpy.io import get_scale_nm, to_uint8
 
 
 class TestToUint8:
     def test_float_array_normalized_to_uint8_spanning_0_255(self):
-        s = hs.signals.Signal2D(
-            np.array([[0.0, 100.0], [200.0, 300.0]], dtype=np.float32)
-        )
+        s = hs.signals.Signal2D(np.array([[0.0, 100.0], [200.0, 300.0]], dtype=np.float32))
         out = to_uint8(s)
         assert out.data.dtype == np.uint8
         assert out.data[0, 0] == 0

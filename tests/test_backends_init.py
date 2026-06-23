@@ -3,6 +3,7 @@
 These assert that importing the backends subpackage (or SegSpy itself)
 auto-registers the two built-in backends: ``traditional_cv`` and ``sam``.
 """
+
 import pytest
 
 from SegSpy.backends import (

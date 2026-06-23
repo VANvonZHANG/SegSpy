@@ -4,6 +4,7 @@ Holds every knob the built-in backends and the morphology module read.
 Domain-specific (e.g. soot analysis) and reporting fields are intentionally NOT
 here — those live in downstream consumers such as ``a_em``.
 """
+
 from dataclasses import dataclass
 
 

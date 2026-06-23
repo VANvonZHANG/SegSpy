@@ -1,7 +1,8 @@
 """Tests for SegSpy.backends.traditional.TraditionalCVSegmenter."""
+
+import hyperspy.api as hs
 import numpy as np
 import pytest
-import hyperspy.api as hs
 
 from SegSpy.backends.traditional import TraditionalCVSegmenter
 from SegSpy.config import SegConfig

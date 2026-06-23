@@ -1,4 +1,5 @@
 """Tests for SegSpy.backends.base.SegmentationBackend / extract_objects."""
+
 import numpy as np
 import pytest
 
@@ -26,7 +27,7 @@ class _StaticBackend(SegmentationBackend):
 
 def _make_mask_with_two_blobs():
     mask = np.zeros((100, 120), dtype=np.uint8)
-    mask[10:30, 10:30] = 255   # blob A, 20x20, area 400
+    mask[10:30, 10:30] = 255  # blob A, 20x20, area 400
     mask[60:90, 80:110] = 255  # blob B, 30x30, area 900
     return mask
 
@@ -50,7 +51,7 @@ def test_extract_objects_finds_two_objects_with_correct_bbox_and_offset():
 
 def test_extract_objects_min_area_filtering():
     mask = np.zeros((80, 80), dtype=np.uint8)
-    mask[5:10, 5:10] = 255    # tiny blob, area 25
+    mask[5:10, 5:10] = 255  # tiny blob, area 25
     mask[20:60, 20:60] = 255  # big blob, area 1600
     image = np.zeros((80, 80), dtype=np.uint8)
     backend = _StaticBackend(mask)

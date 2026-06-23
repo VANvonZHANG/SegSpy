@@ -6,6 +6,7 @@ module imports cleanly without the ``[sam]`` extra. The standout feature is
 :func:`post_filter_masks` — a five-stage filter on SAM AMG output (confidence,
 area, intensity, nested-dedup, edge exclusion) that runs without any heavy deps.
 """
+
 import logging
 import os
 
@@ -62,7 +63,8 @@ def post_filter_masks(masks, original_gray, image_shape, config):
 
     # Stage 1: Confidence filtering
     filtered = [
-        m for m in masks
+        m
+        for m in masks
         if m.get("predicted_iou", 0) >= config.sam_pred_iou_thresh
         and m.get("stability_score", 0) >= config.sam_stability_score_thresh
     ]
@@ -75,7 +77,8 @@ def post_filter_masks(masks, original_gray, image_shape, config):
     # Stage 3: Intensity filtering (keep dark particles)
     global_mean = original_gray.mean()
     filtered = [
-        m for m in filtered
+        m
+        for m in filtered
         if original_gray[m["segmentation"]].mean() < global_mean * config.sam_intensity_ratio
     ]
 
@@ -92,7 +95,8 @@ def post_filter_masks(masks, original_gray, image_shape, config):
     # Stage 5: Edge exclusion
     edge_margin = config.sam_edge_margin
     filtered = [
-        m for m in filtered
+        m
+        for m in filtered
         if not (
             m["bbox"][0] < edge_margin
             or m["bbox"][1] < edge_margin
@@ -178,7 +182,10 @@ class SAMSegmenter(SegmentationBackend):
         logger.info("SAM generated %d candidate masks", len(masks))
 
         filtered = post_filter_masks(
-            masks, original_gray=gray, image_shape=(h, w), config=config,
+            masks,
+            original_gray=gray,
+            image_shape=(h, w),
+            config=config,
         )
         logger.info("Post-filtering retained %d masks", len(filtered))
 

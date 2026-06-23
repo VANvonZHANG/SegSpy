@@ -1,4 +1,5 @@
 """Registry for segmentation backends."""
+
 from SegSpy.backends.base import SegmentationBackend
 
 
@@ -23,9 +24,7 @@ class SegmentationRegistry:
         if not issubclass(backend_class, SegmentationBackend):
             raise TypeError(f"{backend_class} is not a SegmentationBackend subclass")
         if backend_class.name == "abstract":
-            raise ValueError(
-                f"{backend_class.__name__} must define a 'name' class attribute"
-            )
+            raise ValueError(f"{backend_class.__name__} must define a 'name' class attribute")
         if (
             backend_class.name in cls._backends
             and cls._backends[backend_class.name] is not backend_class
@@ -42,9 +41,7 @@ class SegmentationRegistry:
         """
         if name not in cls._backends:
             available = ", ".join(cls.list_backends())
-            raise ValueError(
-                f"Unknown segmentation backend: '{name}'. Available: [{available}]"
-            )
+            raise ValueError(f"Unknown segmentation backend: '{name}'. Available: [{available}]")
         return cls._backends[name]()
 
     @classmethod
@@ -53,9 +50,7 @@ class SegmentationRegistry:
         for name, backend_cls in cls._backends.items():
             if backend_cls.supports(microscope_type, particle_type):
                 return name
-        raise ValueError(
-            f"No segmentation backend supports {microscope_type}/{particle_type}"
-        )
+        raise ValueError(f"No segmentation backend supports {microscope_type}/{particle_type}")
 
     @classmethod
     def list_backends(cls) -> list[str]:

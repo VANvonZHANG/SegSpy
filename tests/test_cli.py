@@ -1,4 +1,5 @@
 """Tests for SegSpy.cli (run subcommand) and the core run_segmentation helper."""
+
 import csv
 
 import hyperspy.api as hs
@@ -49,9 +50,7 @@ def test_write_results_creates_csv_and_png(tmp_path):
     signal = _blob_signal()
     config = SegConfig(min_area=50, use_grabcut_refinement=False)
     objects = run_segmentation(signal, config)
-    csv_path, png_path = write_results(
-        objects, str(tmp_path), "demo", signal.data.shape[:2]
-    )
+    csv_path, png_path = write_results(objects, str(tmp_path), "demo", signal.data.shape[:2])
     assert csv_path.exists()
     assert png_path.exists()
     assert csv_path.name == "demo_particles.csv"

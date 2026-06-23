@@ -5,6 +5,7 @@
 operations. It is deliberately free of any domain-specific (e.g. soot fractal)
 logic — that belongs in downstream consumers.
 """
+
 import cv2
 import numpy as np
 
@@ -35,9 +36,7 @@ def measure_morphology(obj: ParticleObject, scale_nm: float = 1.0) -> dict:
     perimeter = float(cv2.arcLength(cnt, True))
 
     # Equivalent (equal-area-circle) diameter.
-    equivalent_diameter_px = (
-        2.0 * np.sqrt(area / np.pi) if area > 0 else 0.0
-    )
+    equivalent_diameter_px = 2.0 * np.sqrt(area / np.pi) if area > 0 else 0.0
 
     # Min / max Feret diameters via the minimum-area bounding rectangle.
     feret_min_px, feret_max_px = _feret_diameters(cnt)
@@ -49,9 +48,7 @@ def measure_morphology(obj: ParticleObject, scale_nm: float = 1.0) -> dict:
     hull_perimeter = float(cv2.arcLength(hull, True))
     convexity = hull_perimeter / perimeter if perimeter > 0 else 0.0
     solidity = area / hull_area if hull_area > 0 else 0.0
-    roundness = (
-        4.0 * area / (np.pi * feret_max_px ** 2) if feret_max_px > 0 else 0.0
-    )
+    roundness = 4.0 * area / (np.pi * feret_max_px**2) if feret_max_px > 0 else 0.0
 
     # Centroid (moment-based), in (y, x) order to match mask indexing.
     m = cv2.moments(cnt)

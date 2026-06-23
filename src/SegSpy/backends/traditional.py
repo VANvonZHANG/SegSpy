@@ -5,6 +5,7 @@ CLAHE → black-hat background removal → smoothing → adaptive/Otsu threshold
 morphological open/close → optional GrabCut refinement. SegSpy's version is
 particle-agnostic (``supports()`` is always ``True``).
 """
+
 import cv2
 import numpy as np
 
@@ -37,13 +38,15 @@ class TraditionalCVSegmenter(SegmentationBackend):
 
         if config.threshold_method == "adaptive":
             mask = cv2.adaptiveThreshold(
-                denoised, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                cv2.THRESH_BINARY, 21, 2,
+                denoised,
+                255,
+                cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                cv2.THRESH_BINARY,
+                21,
+                2,
             )
         else:
-            _, mask = cv2.threshold(
-                denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
-            )
+            _, mask = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
@@ -61,17 +64,13 @@ class TraditionalCVSegmenter(SegmentationBackend):
 
     @staticmethod
     def _remove_background(img, kernel_size=25):
-        kernel = cv2.getStructuringElement(
-            cv2.MORPH_RECT, (kernel_size, kernel_size)
-        )
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
         return cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
 
     @staticmethod
     def _refine_with_grabcut(img, initial_mask):
         refined_mask = np.zeros_like(initial_mask)
-        contours, _ = cv2.findContours(
-            initial_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
+        contours, _ = cv2.findContours(initial_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         img_color = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
         for cnt in contours:
@@ -91,12 +90,15 @@ class TraditionalCVSegmenter(SegmentationBackend):
             fgd_model = np.zeros((1, 65), np.float64)
             try:
                 cv2.grabCut(
-                    img_color, mask_gc, rect, bgd_model, fgd_model, 3,
+                    img_color,
+                    mask_gc,
+                    rect,
+                    bgd_model,
+                    fgd_model,
+                    3,
                     cv2.GC_INIT_WITH_RECT,
                 )
-                mask2 = np.where(
-                    (mask_gc == 2) | (mask_gc == 0), 0, 1
-                ).astype("uint8")
+                mask2 = np.where((mask_gc == 2) | (mask_gc == 0), 0, 1).astype("uint8")
                 refined_mask = cv2.bitwise_or(refined_mask, mask2 * 255)
             except cv2.error:
                 cv2.drawContours(refined_mask, [cnt], -1, 255, -1)

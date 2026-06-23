@@ -1,4 +1,5 @@
 """Tests for SegSpy.core.ParticleObject."""
+
 import numpy as np
 
 from SegSpy.core import ParticleObject

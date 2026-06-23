@@ -4,6 +4,7 @@ SegSpy consumes :class:`hyperspy.signals.Signal2D` objects; loading EM files is
 the caller's job (use ``hyperspy.api.load``). The two helpers here are
 dependency-light utilities shared across backends and the CLI.
 """
+
 import numpy as np
 
 

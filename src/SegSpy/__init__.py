@@ -10,16 +10,17 @@ Public API:
     for obj in objects:
         measure_morphology(obj, scale_nm=1.0)
 """
-from SegSpy.config import SegConfig
-from SegSpy.core import ParticleObject
-from SegSpy.io import get_scale_nm, to_uint8
-from SegSpy.morphology import measure_morphology
+
 from SegSpy.backends import (
     SAMSegmenter,
     SegmentationBackend,
     SegmentationRegistry,
     TraditionalCVSegmenter,
 )
+from SegSpy.config import SegConfig
+from SegSpy.core import ParticleObject
+from SegSpy.io import get_scale_nm, to_uint8
+from SegSpy.morphology import measure_morphology
 
 __version__ = "0.1.0"
 

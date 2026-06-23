@@ -1,4 +1,5 @@
 """Abstract base class for segmentation backends."""
+
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -48,9 +49,7 @@ class SegmentationBackend(ABC):
         """
         import cv2
 
-        contours, _ = cv2.findContours(
-            mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         objects: list[ParticleObject] = []
         h, w = mask.shape
 
@@ -66,9 +65,7 @@ class SegmentationBackend(ABC):
             bh = min(bh, h - y)
 
             full = (
-                original_signal
-                if isinstance(original_signal, np.ndarray)
-                else original_signal.data
+                original_signal if isinstance(original_signal, np.ndarray) else original_signal.data
             )
             roi_data = full[y : y + bh, x : x + bw]
             mask_roi = mask[y : y + bh, x : x + bw].copy()
