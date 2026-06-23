@@ -47,6 +47,7 @@ dev = [
     "pytest-cov>=4.0",
     "ruff>=0.6.0",
     "pre-commit>=3.0",
+    "tifffile>=2023.0", # EM TIFF test fixtures (hs.load/save needs this writer)
 ]
 
 [project.scripts]
