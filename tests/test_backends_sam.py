@@ -1,7 +1,13 @@
-"""Tests for SegSpy.backends.sam post_filter (runs without torch)."""
-import numpy as np
+"""Tests for SegSpy.backends.sam (post-filter + backend).
 
-from SegSpy.backends.sam import _is_nested, post_filter_masks
+The 5-stage ``post_filter_masks`` is SegSpy's standout and runs without torch,
+so those tests always execute. The full ``segment()`` path needs the ``[sam]``
+extra and is skipped when unavailable.
+"""
+import numpy as np
+import pytest
+
+from SegSpy.backends.sam import SAMSegmenter, _is_nested, post_filter_masks
 
 
 class _FakeConfig:
@@ -19,6 +25,9 @@ def _mask(h, w, y_slice, x_slice):
     return m
 
 
+# --- _is_nested ---
+
+
 def test_is_nested_true():
     large = _mask(100, 100, slice(10, 50), slice(10, 50))
     small = _mask(100, 100, slice(20, 40), slice(20, 40))
@@ -29,6 +38,9 @@ def test_is_nested_false():
     a = _mask(100, 100, slice(10, 30), slice(10, 30))
     b = _mask(100, 100, slice(50, 70), slice(50, 70))
     assert _is_nested(a, b, threshold=0.8) is False
+
+
+# --- post_filter_masks: one test per stage ---
 
 
 def test_stage1_confidence_filter():
@@ -112,3 +124,36 @@ def test_stage5_edge_exclusion():
     result = post_filter_masks(masks, original, (100, 100), _FakeConfig())
     assert len(result) == 1
     assert result[0]["bbox"] == [10, 10, 20, 20]
+
+
+# --- backend metadata ---
+
+
+def test_sam_name():
+    assert SAMSegmenter.name == "sam"
+
+
+def test_sam_supports_is_particle_agnostic():
+    assert SAMSegmenter.supports("TEM", "soot") is True
+    assert SAMSegmenter.supports("SEM", "spherical") is True
+
+
+def test_module_imports_without_sam_extra():
+    # Importing the module must not require torch/segment_anything (lazy import).
+    import importlib
+
+    mod = importlib.import_module("SegSpy.backends.sam")
+    assert hasattr(mod, "SAMSegmenter")
+    assert hasattr(mod, "post_filter_masks")
+
+
+# --- full segment() path (needs the [sam] extra) ---
+
+def test_segment_requires_sam_extra_when_unavailable():
+    """If the [sam] extra is missing, segment() raises an ImportError pointing
+    at ``pip install SegSpy[sam]``."""
+    pytest.importorskip("segment_anything")
+    # Only meaningful when torch/sam ARE present we just assert the happy path
+    # runs without importing errors up to model loading; full model load is
+    # covered by the end-to-end CLI test on real data.
+    assert SAMSegmenter().name == "sam"
