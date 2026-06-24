@@ -37,3 +37,6 @@ Thumbs.db
 
 # Data artifacts (not part of the library)
 *.dm4
+
+# Sphinx build output
+docs/_build/
