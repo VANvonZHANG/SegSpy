@@ -21,5 +21,6 @@ particle-type-agnostic.
 :maxdepth: 2
 
 user-guide/index
+tutorials/index
 api-reference/index
 ```
