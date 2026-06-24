@@ -19,4 +19,6 @@ particle-type-agnostic.
 
 ```{toctree}
 :maxdepth: 2
+
+api-reference/index
 ```
