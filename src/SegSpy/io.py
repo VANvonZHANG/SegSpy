@@ -31,10 +31,14 @@ def to_uint8(signal):
 
 
 def get_scale_nm(signal) -> float:
-    """Return the nm/pixel scale from a signal's axis calibration.
+    """Return the nm-per-pixel scale from a signal's axis calibration.
 
-    Converts the axis-0 ``scale`` × ``units`` into nanometers:
-    ``um``→×1000, ``nm``→×1, ``mm``→×1e6, ``pm``→×1e-3.
+    Reads the axis-0 ``scale`` and ``units`` and converts them to nanometres:
+
+    - ``um``  →  scale × 1000
+    - ``nm``  →  scale × 1
+    - ``mm``  →  scale × 1e6
+    - ``pm``  →  scale × 1e-3
 
     Raises:
         ValueError: if the units string is not a recognised length unit.
