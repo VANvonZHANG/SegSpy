@@ -22,5 +22,6 @@ particle-type-agnostic.
 
 user-guide/index
 tutorials/index
+architecture/overview
 api-reference/index
 ```
