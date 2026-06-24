@@ -1,7 +1,7 @@
 # Configuration
 
 All segmentation and morphology knobs live in a single dataclass,
-{class}`~SegSpy.SegConfig`. Construct it directly or via the signal-aware factory:
+{class}`~SegSpy.config.SegConfig`. Construct it directly or via the signal-aware factory:
 
 ```python
 from SegSpy import SegConfig

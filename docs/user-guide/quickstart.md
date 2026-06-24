@@ -42,7 +42,7 @@ for obj in objects[:5]:
    by default, or `sam` if you installed the extra and set `backend="sam"`.
 3. **`segment`** returns a binary mask (uint8, 0/255).
 4. **`extract_objects`** runs connected-component analysis on the mask and
-   returns one {class}`~SegSpy.ParticleObject` per contour above `min_area`.
+   returns one {class}`~SegSpy.core.ParticleObject` per contour above `min_area`.
    Each object carries its image ROI, mask ROI, and offset.
 5. **`measure_morphology`** computes size/shape metrics from each mask and stores
    them in `obj.metrics`. Lengths are reported in both pixels (`_px`) and

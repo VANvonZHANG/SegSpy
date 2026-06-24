@@ -23,5 +23,5 @@ This produces:
 | `--no-grabcut` | *(flag)* | Disable GrabCut refinement (traditional backend) |
 
 The CLI auto-detects TEM/SEM from the file's metadata (same logic as
-{class}`~SegSpy.SegConfig.from_signal`). For anything beyond these flags — custom
+{class}`~SegSpy.config.SegConfig.from_signal`). For anything beyond these flags — custom
 SAM thresholds, CLAHE tuning — use the library API from the {doc}`quickstart <quickstart>`.
