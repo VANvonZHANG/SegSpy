@@ -2,7 +2,10 @@
 
 [![CI](https://github.com/VANvonZHANG/SegSpy/actions/workflows/ci.yml/badge.svg)](https://github.com/VANvonZHANG/SegSpy/actions/workflows/ci.yml)
 [![Lint](https://github.com/VANvonZHANG/SegSpy/actions/workflows/lint.yml/badge.svg)](https://github.com/VANvonZHANG/SegSpy/actions/workflows/lint.yml)
+[![Docs](https://github.com/VANvonZHANG/SegSpy/actions/workflows/docs.yml/badge.svg)](https://vanvonzhang.github.io/SegSpy/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/VANvonZHANG/SegSpy/blob/main/LICENSE)
+
+📖 **[Read the documentation](https://vanvonzhang.github.io/SegSpy/)**
 
 Headless, backend-pluggable EM image segmentation library for HyperSpy.
 
